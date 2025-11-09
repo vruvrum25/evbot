@@ -5,7 +5,8 @@
 # data/market_state.py
 import logging
 from datetime import datetime, timezone
-from data.polymarket.market_finder import MarketFinder
+# Используем относительный импорт, так как они соседи в одной папке
+from .market_finder import MarketFinder
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +28,7 @@ class MarketState:
                 cls._current_market = new_market
                 logger.info(f"💾 MarketState: Рынок запомнен [{new_market['condition_id']}]")
             else:
-                # Если не нашли, сбрасываем память на всякий случай
+                # Если не нашли, сбрасываем память
                 cls._current_market = None
                 
         return cls._current_market
@@ -39,6 +40,7 @@ class MarketState:
             end_time_str = market.get('end_date_iso')
             if not end_time_str: return True
             
+            # Парсим время окончания из строки ISO
             end_time = datetime.fromisoformat(end_time_str.replace('Z', '+00:00'))
             now = datetime.now(timezone.utc)
             
