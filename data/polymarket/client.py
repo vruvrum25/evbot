@@ -1,3 +1,5 @@
+#Созданеие коннекта с clob полимаркета
+
 # data/polymarket/client.py
 import logging
 from py_clob_client.client import ClobClient
