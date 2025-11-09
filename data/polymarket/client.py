@@ -3,7 +3,7 @@
 # data/polymarket/client.py
 import logging
 from py_clob_client.client import ClobClient
-from config.settings import Config # <-- Импортируем наши настройки
+from config.settings import Config
 
 logger = logging.getLogger(__name__)
 
@@ -43,6 +43,18 @@ class PolyClient:
                 raise e # Останавливаем бота, без связи работать нельзя
 
         return cls._client
+
+    @classmethod
+    def get_api_creds(cls):
+        """
+        Возвращает текущие API ключи (нужны для WebSocket).
+        Автоматически инициализирует клиента, если он еще не готов.
+        """
+        # Убеждаемся, что клиент существует, прежде чем брать его ключи
+        if cls._client is None:
+            cls.get_client()
+            
+        return cls._client.creds
 
 
 
