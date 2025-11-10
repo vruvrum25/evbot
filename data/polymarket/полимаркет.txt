@@ -21,6 +21,10 @@ https://gamma-api.polymarket.com/events?closed=false
 
 
 
+3 - https://gamma-api.polymarket.com/events?tag_id=21&limit=500&closed=false
+
+Тут есть в списке 15 минутки (и кстати событий всего 172 в крипто там, я поставил тут лимит 500)
+
 
 
 
