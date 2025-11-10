@@ -1,0 +1,66 @@
+import requests
+import time
+
+def deep_search_all_eth_15m_global():
+    print("🌍 Начинаю ГЛОБАЛЬНЫЙ поиск (без фильтра категорий) рынков ETH 15m...")
+    
+    url = "https://gamma-api.polymarket.com/events"
+    limit = 10000
+    offset = 0
+    page = 1
+    all_found_events = []
+
+    while True:
+        print(f"📄 Страница {page} (рынки {offset} - {offset + limit})...")
+        
+        try:
+            # Параметры БЕЗ "tag_id"
+            params = {
+                "active": "true",    
+                "closed": "false",   
+                "limit": limit,
+                "offset": offset,
+                "order": "startDate", 
+                "ascending": "false"
+            }
+            
+            resp = requests.get(url, params=params, timeout=10)
+            if resp.status_code != 200:
+                print(f"❌ Ошибка API: {resp.status_code}")
+                time.sleep(2)
+                continue
+
+            events = resp.json()
+            
+            if not events:
+                print("🏁 Страницы кончились.")
+                break 
+
+            for event in events:
+                slug = event.get('slug', '')
+                # Ищем 'eth' и '15m'
+                if 'eth' in slug and '15m' in slug:
+                    print(f"🎉 НАШЕЛ на стр. {page}: {slug}")
+                    all_found_events.append(event)
+
+            if len(events) < limit:
+                 print("🏁 Достигнут конец списка.")
+                 break
+
+            offset += limit
+            page += 1
+            time.sleep(1) # 1 запрос в секунду
+
+        except Exception as e:
+            print(f"💥 Ошибка сети: {e}")
+            time.sleep(5)
+
+    print(f"\n✅ Глобальный поиск завершен. Всего найдено: {len(all_found_events)}")
+    return all_found_events
+
+# --- ЗАПУСК ---
+global_eth_markets = deep_search_all_eth_15m_global()
+
+print("\n--- Итоговый список ссылок (Global) ---")
+for event in global_eth_markets:
+    print(f"https://polymarket.com/event/{event.get('slug')}")
